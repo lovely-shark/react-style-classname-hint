@@ -1,0 +1,6 @@
+out
+dist
+node_modules
+debug.log
+.DS_Store
+*.zip
