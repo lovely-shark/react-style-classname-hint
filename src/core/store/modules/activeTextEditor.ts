@@ -9,35 +9,36 @@ export interface ActiveTextEditor {
 
 export default class {
   private readonly STORE_KEY = 'ACTIVE_STYLE_FILE';
-  constructor(private readonly vscodeContext: ExtensionContext) {}
+  private state: ActiveTextEditor = {
+    currentActiveFilePath: '',
+    styleFilePaths: [],
+    styleClassNameMap: {},
+  };
+  constructor(private readonly vscodeContext: ExtensionContext) {
+    this.initState();
+  }
 
   get(): ActiveTextEditor {
-    return (
-      this.vscodeContext.workspaceState.get<ActiveTextEditor>(this.STORE_KEY) ?? {
-        currentActiveFilePath: '',
-        styleFilePaths: [],
-        styleClassNameMap: {},
-      }
-    );
+    return this.state;
   }
 
-  set(activeTextEditor: ActiveTextEditor): void {
-    this.vscodeContext.workspaceState.update(this.STORE_KEY, activeTextEditor);
+  initState(): void {
+    this.state = {
+      currentActiveFilePath: '',
+      styleFilePaths: [],
+      styleClassNameMap: {},
+    };
   }
 
-  setCurrentActiveFilePath(path: string) {
-    const activeTextEditor = this.get();
-    activeTextEditor.currentActiveFilePath = path;
-    this.set(activeTextEditor);
+  setCurrentActiveFilePath(path: string): void {
+    this.state.currentActiveFilePath = path;
   }
 
   updateActiveStyleFile(filePath: string, classNames: string[]): void {
-    const activeTextEditor = this.get();
-    if (!activeTextEditor.styleFilePaths.includes(filePath)) {
-      activeTextEditor.styleFilePaths.push(filePath);
+    if (!this.state.styleFilePaths.includes(filePath)) {
+      this.state.styleFilePaths.push(filePath);
     }
-    activeTextEditor.styleClassNameMap[filePath] = classNames;
-    this.set(activeTextEditor);
+    this.state.styleClassNameMap[filePath] = classNames;
   }
 
   removeActiveStyleFile(filePath: string): void {
@@ -47,6 +48,5 @@ export default class {
       activeTextEditor.styleFilePaths.splice(findfilePathIndex, -1);
       delete activeTextEditor.styleClassNameMap[filePath];
     }
-    this.set(activeTextEditor);
   }
 }
