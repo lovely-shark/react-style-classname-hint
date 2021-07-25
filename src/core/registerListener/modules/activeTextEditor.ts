@@ -12,7 +12,7 @@ import {
   ThrottleFn,
 } from '../../utils';
 
-export default function (context: ExtensionContext) {
+export default function listenerActiveTextEditor(context: ExtensionContext) {
   const { storeActiveTextEditor } = useStore();
   vscode.window.onDidChangeActiveTextEditor(editor => {
     if (editor) {
