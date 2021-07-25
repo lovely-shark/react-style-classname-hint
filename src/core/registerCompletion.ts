@@ -19,8 +19,6 @@ export default function registerCompletion(context: ExtensionContext): void {
   return;
 
   function handleProvideCompletion(document: TextDocument, position: Position) {
-    console.log('触发');
-
     const linePrefixStr = document.lineAt(position).text.substr(0, position.character);
     const completionList: CompletionItem[] = [];
     const verifyIsEditClassNameReg = /^.*className=(('|")|(\{))[^'"\}]*$/;
