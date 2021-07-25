@@ -19,10 +19,12 @@ export default function registerCompletion(context: ExtensionContext): void {
   return;
 
   function handleProvideCompletion(document: TextDocument, position: Position) {
-    const linePrefix = document.lineAt(position).text.substr(0, position.character);
+    const linePrefixStr = document.lineAt(position).text.substr(0, position.character);
     const completionList: CompletionItem[] = [];
-    if (/^.*classname=(('|")|(\{))[^'"\}]*$/.test(linePrefix)) {
-      const [keyword] = linePrefix.match(/[^ '"\{]*$/) ?? [undefined];
+    const verifyIsEditClassNameReg = /^.*classname=(('|")|(\{))[^'"\}]*$/;
+    if (verifyIsEditClassNameReg.test(linePrefixStr)) {
+      const lastKeywordReg = /[^ '"\{]*$/;
+      const [keyword] = linePrefixStr.match(lastKeywordReg) ?? [undefined];
       if (keyword) {
         const classNames = findRelatClassNames(keyword);
         classNames.forEach(name => {
