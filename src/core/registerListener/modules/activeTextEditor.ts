@@ -1,12 +1,16 @@
 import type { ExtensionContext } from 'vscode';
 import * as vscode from 'vscode';
-import type { StyleFileType } from '../../store';
 import { useStore } from '../../store';
-import parseImportStyle from '../../utils/modules/parseImportStyle';
-import parseStyleToClassNames from '../../utils/modules/parseStyleToClassNames';
-import { parseLessToCss, parseSassToCss, parseStylusToCss } from '../../utils/modules/parseToCss';
-import readUriContent from '../../utils/modules/readUriContent';
-import ThrottleFn from '../../utils/modules/throttleFn';
+import type { StyleFileType } from '../../store';
+import {
+  parseImportStyle,
+  parseLessToCss,
+  parseSassToCss,
+  parseStyleToClassNames,
+  parseStylusToCss,
+  readUriContent,
+  ThrottleFn,
+} from '../../utils';
 
 export default function (context: ExtensionContext) {
   console.log('也许你都忘了');
