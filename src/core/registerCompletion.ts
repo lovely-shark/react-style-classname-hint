@@ -19,6 +19,8 @@ export default function registerCompletion(context: ExtensionContext): void {
   return;
 
   function handleProvideCompletion(document: TextDocument, position: Position) {
+    console.log('触发');
+
     const linePrefixStr = document.lineAt(position).text.substr(0, position.character);
     const completionList: CompletionItem[] = [];
     const verifyIsEditClassNameReg = /^.*className=(('|")|(\{))[^'"\}]*$/;
@@ -54,28 +56,3 @@ export default function registerCompletion(context: ExtensionContext): void {
     }
   }
 }
-
-// const provider1 =
-// console.log('开始记时')
-// setTimeout(async () => {
-//   console.log(vscode.commands.executeCommand('editor.action.triggerSuggest'))
-// }, 2000)
-
-// vscode.languages.registerCompletionItemProvider('plaintext', {
-//   provideCompletionItems(
-//     document: vscode.TextDocument,
-//     position: vscode.Position,
-//     token: vscode.CancellationToken,
-//     context: vscode.CompletionContext
-//   ) {
-//     const commandCompletion = new vscode.CompletionItem('new222');
-//     commandCompletion.kind = vscode.CompletionItemKind.Keyword;
-//     commandCompletion.insertText = 'new ';
-//     commandCompletion.command = {
-//       command: 'editor.action.triggerSuggest',
-//       title: 'Re-trigger completions...',
-//     };
-
-//     return [commandCompletion];
-//   },
-// });
