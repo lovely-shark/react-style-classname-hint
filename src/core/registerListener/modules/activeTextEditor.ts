@@ -68,13 +68,11 @@ export default function (context: ExtensionContext) {
         let cssContent = readUriContent(styleUri);
         try {
           switch (style.type) {
-            case 'scss':
-            case 'sass':
-              cssContent = parseSassToCss(cssContent);
-              break;
             case 'less':
+            case 'scss':
               cssContent = (await parseLessToCss(cssContent)).css;
               break;
+            case 'sass':
             case 'stylu':
               cssContent = await parseStylusToCss(cssContent);
               break;
