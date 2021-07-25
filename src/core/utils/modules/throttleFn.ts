@@ -7,8 +7,8 @@ export default class ThrottleFn {
     if (this.time === null) {
       this.fn = fn;
       this.time = setTimeout(() => {
-        this.fn?.();
         this.time = null;
+        this.fn?.();
       }, delayed);
     }
   };
