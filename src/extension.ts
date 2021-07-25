@@ -1,7 +1,6 @@
-import * as vscode from 'vscode';
 import type { ExtensionContext } from 'vscode';
-import registerCompletion from './core/registerCompletion';
 import initStyleFile from './core/initStyleFile';
+import registerCompletion from './core/registerCompletion';
 import registerListener from './core/registerListener/index';
 import { useStore } from './core/store';
 
