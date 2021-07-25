@@ -28,10 +28,7 @@ export default function (context: ExtensionContext) {
   void (function () {
     const changeThrottle = new ThrottleFn();
     vscode.workspace.onDidChangeTextDocument(textDocument => {
-      console.log(111);
-
       changeThrottle.exec(2000, () => {
-        console.log(222);
         const { currentActiveFilePath } = storeActiveTextEditor.get();
         if (currentActiveFilePath === textDocument.document.fileName) {
           const currentFileStyles = parseImportStyle(textDocument.document);
@@ -47,7 +44,6 @@ export default function (context: ExtensionContext) {
 
           needRemoveFilePaths.forEach(path => storeActiveTextEditor.removeActiveStyleFile(path));
           updateCurrentTextEditorStyle(needUpdateFileStyles);
-          console.log('storeActiveTextEditor.get()', storeActiveTextEditor.get());
         }
       });
     });

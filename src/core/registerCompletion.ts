@@ -1,88 +1,79 @@
-import * as path from 'path';
-import type { CompletionItem, Position, TextDocument, ExtensionContext } from 'vscode';
+import type { CompletionItem, ExtensionContext, Position, TextDocument } from 'vscode';
 import * as vscode from 'vscode';
-import * as fs from 'fs';
+import { useStore } from './store';
 
 const completionTriggerChars = `'".-_abcdefghijklmnopqrstuvwxyz1234567890 `;
 const completionTriggerLanguages = ['typescript', 'typescriptreact', 'javascript'];
 
-// const completionList: CompletionItem[] = completionTriggerLanguages.map(
-//   (language) => {
-// vscode.languages.registerCompletionItemProvider(
-//   "typescript",
-//   {
-//     provideCompletionItems(document: TextDocument, position: Position) {
-//       console.log("拥有你");
+export default function registerCompletion(context: ExtensionContext): void {
+  const triggerCompletionList = completionTriggerLanguages.map(language =>
+    vscode.languages.registerCompletionItemProvider(
+      language,
+      { provideCompletionItems: handleProvideCompletion },
+      ...completionTriggerChars
+    )
+  );
 
-//       const allContent = document.getText(
-//         new vscode.Range(
-//           new vscode.Position(0, 0),
-//           new vscode.Position(document.lineCount + 1, 0)
-//         )
-//       );
-//       const currentFilePath = path.dirname(document.fileName);
-//       const imClassList = allContent.match(
-//         /import.+?('|")(.+?\.(le|sc|c|sa)ss)('|");?$/gm
-//       ) ?? [undefined];
-//       if (imClassList) {
-//         const completionList: CompletionItem[] = [];
-//         imClassList.forEach((imClass) => {
-//           if (!imClass) return;
-//           const [fileName] = imClass.match(/(?<="|').+?(?="|')/) ?? [undefined];
-//           if (fileName) {
-//             const cssFile = fs
-//               .readFileSync(path.resolve(currentFilePath, fileName))
-//               .toString();
-//             const classNameList = cssFile.match(/(?<=\.)[\w-_]+/g);
-//             if (classNameList) {
-//               return classNameList.map((name) =>
-//                 completionList.push(
-//                   new vscode.CompletionItem(
-//                     name,
-//                     vscode.CompletionItemKind.Color
-//                   )
-//                 )
-//               );
-//             }
-//           }
-//         });
-//         return completionList;
-//       }
-//       console.log("刻在我心底的名字");
-//       const linePrefix = document
-//         .lineAt(position)
-//         .text.substr(0, position.character);
-//     },
-//   },
-//   ...completionTriggerChars
-// );
-//   }
-// );
-export default function (context: ExtensionContext) {
-  // setInterval(() => {
-  //   console.log('context', context.workspaceState.get('one'))
-  // }, 2000)
+  context.subscriptions.push(...triggerCompletionList);
+
+  return;
+
+  function handleProvideCompletion(document: TextDocument, position: Position) {
+    const linePrefix = document.lineAt(position).text.substr(0, position.character);
+    const completionList: CompletionItem[] = [];
+    if (/^.*classname=(('|")|(\{))[^'"\}]*$/.test(linePrefix)) {
+      const [keyword] = linePrefix.match(/[^ '"\{]*$/) ?? [undefined];
+      if (keyword) {
+        const classNames = findRelatClassNames(keyword);
+        classNames.forEach(name => {
+          const completionItem = new vscode.CompletionItem(
+            name,
+            vscode.CompletionItemKind.Constant
+          );
+          completionItem.command = {
+            command: 'editor.action.triggerSuggest',
+            title: 'Re-trigger completions...',
+          };
+          completionList.push(completionItem);
+        });
+      }
+    }
+    return completionList;
+
+    function findRelatClassNames(keyword: string): string[] {
+      const { storeActiveTextEditor } = useStore();
+      const { styleClassNameMap } = storeActiveTextEditor.get();
+      const matchRegStr = keyword.split('').join('.*');
+      let findResult: string[] = [];
+      Object.values(styleClassNameMap).map(classNames => {
+        findResult = classNames.filter(name => new RegExp(`${matchRegStr}`).test(name));
+      });
+      return findResult;
+    }
+  }
 }
 
-// const provider1 = vscode.languages.registerCompletionItemProvider('plaintext', {
+// const provider1 =
+// console.log('开始记时')
+// setTimeout(async () => {
+//   console.log(vscode.commands.executeCommand('editor.action.triggerSuggest'))
+// }, 2000)
+
+// vscode.languages.registerCompletionItemProvider('plaintext', {
 //   provideCompletionItems(
 //     document: vscode.TextDocument,
 //     position: vscode.Position,
 //     token: vscode.CancellationToken,
 //     context: vscode.CompletionContext
 //   ) {
-//     const commandCompletion = new vscode.CompletionItem('new222')
-//     commandCompletion.kind = vscode.CompletionItemKind.Keyword
-//     commandCompletion.insertText = 'new '
+//     const commandCompletion = new vscode.CompletionItem('new222');
+//     commandCompletion.kind = vscode.CompletionItemKind.Keyword;
+//     commandCompletion.insertText = 'new ';
 //     commandCompletion.command = {
 //       command: 'editor.action.triggerSuggest',
 //       title: 'Re-trigger completions...',
-//     }
+//     };
 
-//     return [commandCompletion]
+//     return [commandCompletion];
 //   },
-// })
-// console.log('开始记时')
-// setTimeout(async () => {
-//   console.log(vscode.commands.executeCommand('editor.action.triggerSuggest'))
-// }, 2000)
+// });
