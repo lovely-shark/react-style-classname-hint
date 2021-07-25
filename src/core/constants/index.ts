@@ -1,1 +1,1 @@
-export const styleSuffixStr = 'less,scss,sass,css,styl'
+export const styleSuffixStr = 'less,scss,sass,css,styl';
