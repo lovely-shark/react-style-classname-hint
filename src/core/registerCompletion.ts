@@ -1,10 +1,10 @@
-import * as path from 'path'
-import type { CompletionItem, Position, TextDocument, ExtensionContext } from 'vscode'
-import * as vscode from 'vscode'
-import * as fs from 'fs'
+import * as path from 'path';
+import type { CompletionItem, Position, TextDocument, ExtensionContext } from 'vscode';
+import * as vscode from 'vscode';
+import * as fs from 'fs';
 
-const completionTriggerChars = `'".-_abcdefghijklmnopqrstuvwxyz1234567890 `
-const completionTriggerLanguages = ['typescript', 'typescriptreact', 'javascript']
+const completionTriggerChars = `'".-_abcdefghijklmnopqrstuvwxyz1234567890 `;
+const completionTriggerLanguages = ['typescript', 'typescriptreact', 'javascript'];
 
 // const completionList: CompletionItem[] = completionTriggerLanguages.map(
 //   (language) => {
