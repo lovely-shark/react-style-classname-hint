@@ -21,7 +21,7 @@ export default function registerCompletion(context: ExtensionContext): void {
   function handleProvideCompletion(document: TextDocument, position: Position) {
     const linePrefixStr = document.lineAt(position).text.substr(0, position.character);
     const completionList: CompletionItem[] = [];
-    const verifyIsEditClassNameReg = /^.*classname=(('|")|(\{))[^'"\}]*$/;
+    const verifyIsEditClassNameReg = /^.*className=(('|")|(\{))[^'"\}]*$/;
     if (verifyIsEditClassNameReg.test(linePrefixStr)) {
       const lastKeywordReg = /[^ '"\{]*$/;
       const [keyword] = linePrefixStr.match(lastKeywordReg) ?? [undefined];
