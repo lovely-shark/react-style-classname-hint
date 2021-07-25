@@ -2,7 +2,7 @@ import type { TextDocument } from 'vscode';
 import * as vscode from 'vscode';
 import * as path from 'path';
 
-type StyleTypes = 'sass' | 'scss' | 'less' | 'stylu' | 'css';
+export type StyleTypes = 'sass' | 'scss' | 'less' | 'stylu' | 'css';
 type ParseImportStyleResult = Array<{ type: StyleTypes; path: string }>;
 
 /**
@@ -10,9 +10,7 @@ type ParseImportStyleResult = Array<{ type: StyleTypes; path: string }>;
  * @returns 当前页包含的css文件路径与文件类型(css/less...)
  */
 export default function parseImportStyle(document: TextDocument): ParseImportStyleResult {
-  const fileContent = document.getText(
-    new vscode.Range(new vscode.Position(0, 0), new vscode.Position(document.lineCount + 1, 0))
-  );
+  const fileContent = document.getText();
   const currentFolderPath = path.dirname(document.fileName);
 
   const parseResult: ParseImportStyleResult = (() => {

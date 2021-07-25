@@ -1,15 +1,19 @@
-import * as vscode from 'vscode';
 import type { ExtensionContext } from 'vscode';
+import * as vscode from 'vscode';
 import registerCompletion from './core/registerCompletion';
-import initStyleFile from './core/initStyleFile';
 import registerListener from './core/registerListener/index';
+import { resetStore } from './core/registerListener/modules/activeTextEditor';
 import { useStore } from './core/store';
 
 export function activate(context: ExtensionContext) {
-  const { storeAllStyleFile } = useStore(context);
-  // registerCompletion(context)
-  registerCompletion;
+  useStore(context);
   registerListener(context);
-  initStyleFile(storeAllStyleFile);
-  context.subscriptions.push();
+  registerCompletion(context);
+
+  void (function initCurrentOpenEditor() {
+    const [firstTextDocuments] = vscode.workspace.textDocuments;
+    if (firstTextDocuments) {
+      resetStore(firstTextDocuments);
+    }
+  })();
 }
