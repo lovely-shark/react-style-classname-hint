@@ -4,7 +4,7 @@ import { styleSuffixStr } from '../../constants/';
 import { useStore } from '../../store';
 import matchCssFileSuffix from '../../utils/modules/matchCssFileSuffix';
 
-export default function createStyleFileWatcher(context: ExtensionContext): void {
+export default function initStyleFileListener(context: ExtensionContext): void {
   const styleFileWatcher = vscode.workspace.createFileSystemWatcher(`**/*.{${styleSuffixStr}}`);
   styleFileWatcher.onDidChange(styleFileChange);
   styleFileWatcher.onDidDelete(styleFileDelete);
