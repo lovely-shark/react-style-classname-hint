@@ -1,3 +1,8 @@
+import type { TextDocument } from 'vscode';
+import * as vscode from 'vscode';
+import type { ParseDocImportStyleResult } from '../../typings';
+import { parseCssToClassNames, parseDocImportStyle, parseMultiStyleToCss } from '../../utils';
+
 type FilePath = string;
 interface ActiveTextEditor {
   currentActiveFilePath: string;
@@ -41,4 +46,36 @@ export default class StoreActiveTextEditor {
       delete this.state.styleClassNameMap[filePath];
     }
   }
+
+  get utils() {
+    return {
+      initTextDocStyle: this.utilInitTextDocStyle,
+      handleFileStyles: this.utilHandleFileStyles,
+    };
+  }
+
+  private utilInitTextDocStyle = (document: TextDocument): void => {
+    const { path } = document.uri;
+    if (/(tsx|js|ts)$/.test(path)) {
+      this.resetState();
+      this.setCurrentActiveFilePath(path);
+      const currentFileStyles = parseDocImportStyle(document);
+      this.utilHandleFileStyles(currentFileStyles);
+    }
+  };
+
+  private utilHandleFileStyles = async (fileStyles: ParseDocImportStyleResult): Promise<void> => {
+    fileStyles.forEach(async style => {
+      try {
+        const cssContent = await parseMultiStyleToCss(style.path, style.type);
+        this.updateActiveStyleContent(
+          style.path,
+          Array.from(new Set(parseCssToClassNames(cssContent)))
+        );
+      } catch (error) {
+        console.error(error);
+        vscode.window.showErrorMessage(`处理${style.path}样式异常`);
+      }
+    });
+  };
 }

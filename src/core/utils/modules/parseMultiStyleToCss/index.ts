@@ -1,9 +1,11 @@
-import { Uri } from 'vscode';
-import { parseLessToCss, parseStylusToCss, readCssFileContent } from '../../utils';
+import type { StyleTypes } from '../../../typings';
+import readCssFileContent from '../readCssFileContent';
+import parseLessToCss from './modules/parseLessToCss';
+import parseStylusToCss from './modules/parseStylusToCss';
 
-export async function resolveStyleContent(
-  stylePath: Uri['path'],
-  styleType: string
+export default async function parseMultiStyleToCss(
+  stylePath: string,
+  styleType: StyleTypes
 ): Promise<string> {
   let cssContent = readCssFileContent(stylePath);
   switch (styleType) {
@@ -12,7 +14,7 @@ export async function resolveStyleContent(
       cssContent = (await parseLessToCss(cssContent)).css;
       break;
     case 'sass':
-    case 'stylu':
+    case 'styl':
       cssContent = await parseStylusToCss(cssContent);
       break;
     case 'css':

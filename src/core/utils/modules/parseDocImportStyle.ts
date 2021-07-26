@@ -1,8 +1,7 @@
 import * as path from 'path';
 import type { TextDocument } from 'vscode';
-import type { StyleTypes } from '../../typings';
-
-type ParseDocImportStyleResult = Array<{ type: StyleTypes; path: string }>;
+import type { ParseDocImportStyleResult, StyleTypes } from '../../typings';
+import matchCssFileSuffix from './matchCssFileSuffix';
 
 /**
  *
@@ -22,12 +21,12 @@ export default function parseDocImportStyle(document: TextDocument): ParseDocImp
       importClassList.forEach(importVal => {
         const [styleFileRelativePath] = importVal.match(/(?<=('|"))(.+?)(?=('|");?$)/) ?? [];
         if (styleFileRelativePath) {
-          const [fileSuffix] = styleFileRelativePath.match(/(?<=\.)[a-z]+?$/) ?? [];
+          const fileSuffix = matchCssFileSuffix(styleFileRelativePath);
           if (fileSuffix) {
             const styleFileAbsPath = path.resolve(currentFolderPath, styleFileRelativePath);
             result.push({
               path: styleFileAbsPath,
-              type: fileSuffix as StyleTypes,
+              type: fileSuffix,
             });
           }
         }
