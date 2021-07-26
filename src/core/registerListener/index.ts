@@ -1,8 +1,8 @@
 import type { ExtensionContext } from 'vscode';
-import createStyleFileWatcher from './modules/styleFile';
-import activeTextEditor from './modules/activeTextEditor';
+import initStyleFileListener from './modules/styleFile';
+import initActiveTextEditorListener from './modules/activeTextEditor';
 
-export default function (context: ExtensionContext): void {
-  createStyleFileWatcher(context);
-  activeTextEditor(context);
+export default function registerListener(context: ExtensionContext): void {
+  initStyleFileListener(context);
+  initActiveTextEditorListener(context);
 }

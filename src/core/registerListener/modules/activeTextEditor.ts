@@ -2,15 +2,15 @@ import type { ExtensionContext } from 'vscode';
 import * as vscode from 'vscode';
 import { useStore } from '../../store';
 import {
-  parseImportStyle,
+  parseDocImportStyle,
   parseLessToCss,
-  parseStyleToClassNames,
+  parseCssToClassNames,
   parseStylusToCss,
   readCssFileContent,
   ThrottleFn,
 } from '../../utils';
 
-export default function listenerActiveTextEditor(context: ExtensionContext) {
+export default function initActiveTextEditorListener(context: ExtensionContext) {
   const { storeActiveTextEditor } = useStore();
   vscode.window.onDidChangeActiveTextEditor(editor => {
     if (editor) {
@@ -22,10 +22,10 @@ export default function listenerActiveTextEditor(context: ExtensionContext) {
     const changeThrottle = new ThrottleFn();
     vscode.workspace.onDidChangeTextDocument(textDocument => {
       changeThrottle.exec(2000, () => {
-        const { currentActiveFilePath } = storeActiveTextEditor.get();
+        const { currentActiveFilePath, styleFilePaths } = storeActiveTextEditor.get();
         if (currentActiveFilePath === textDocument.document.fileName) {
-          const currentFileStyles = parseImportStyle(textDocument.document);
-          const oldActiveStyleFilePaths = storeActiveTextEditor.get().styleFilePaths;
+          const currentFileStyles = parseDocImportStyle(textDocument.document);
+          const oldActiveStyleFilePaths = styleFilePaths;
           const newActiveStyleFilePaths = currentFileStyles.map(item => item.path);
 
           const needRemoveFilePaths = oldActiveStyleFilePaths.filter(
@@ -35,7 +35,7 @@ export default function listenerActiveTextEditor(context: ExtensionContext) {
             .filter(path => !oldActiveStyleFilePaths.includes(path))
             .map(path => currentFileStyles.find(item => item.path === path)!);
 
-          needRemoveFilePaths.forEach(path => storeActiveTextEditor.removeActiveStyleFile(path));
+          needRemoveFilePaths.forEach(path => storeActiveTextEditor.removeActiveStyleContent(path));
           updateCurrentTextEditorStyle(needUpdateFileStyles);
         }
       });
@@ -46,16 +46,17 @@ export default function listenerActiveTextEditor(context: ExtensionContext) {
 }
 export const resetStore = (document: vscode.TextDocument) => {
   const { storeActiveTextEditor } = useStore();
-  const path = document.uri.path;
+  const { path } = document.uri;
   if (/(tsx|js|ts)$/.test(path)) {
-    storeActiveTextEditor.initState();
+    storeActiveTextEditor.resetState();
     storeActiveTextEditor.setCurrentActiveFilePath(path);
-    const currentFileStyles = parseImportStyle(document);
+    const currentFileStyles = parseDocImportStyle(document);
     updateCurrentTextEditorStyle(currentFileStyles);
   }
 };
+
 export function updateCurrentTextEditorStyle(
-  updateFileStyles: ReturnType<typeof parseImportStyle>
+  updateFileStyles: ReturnType<typeof parseDocImportStyle>
 ): void {
   const { storeActiveTextEditor } = useStore();
   updateFileStyles.forEach(async style => {
@@ -67,15 +68,15 @@ export function updateCurrentTextEditorStyle(
           cssContent = (await parseLessToCss(cssContent)).css;
           break;
         case 'sass':
-        case 'stylu':
+        case 'styl':
           cssContent = await parseStylusToCss(cssContent);
           break;
         case 'css':
           break;
       }
-      storeActiveTextEditor.updateActiveStyleFile(
+      storeActiveTextEditor.updateActiveStyleContent(
         style.path,
-        Array.from(new Set(parseStyleToClassNames(cssContent)))
+        Array.from(new Set(parseCssToClassNames(cssContent)))
       );
     } catch (error) {
       console.log(error);

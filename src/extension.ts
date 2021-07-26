@@ -6,14 +6,18 @@ import { resetStore } from './core/registerListener/modules/activeTextEditor';
 import { useStore } from './core/store';
 
 export function activate(context: ExtensionContext) {
-  useStore(context);
+  useStore();
   registerListener(context);
   registerCompletion(context);
 
+  // TODO: 初始化需要单独拆成一个函数
   void (function initCurrentOpenEditor() {
-    const [firstTextDocuments] = vscode.workspace.textDocuments;
-    if (firstTextDocuments) {
-      resetStore(firstTextDocuments);
-    }
+    vscode.workspace.textDocuments.some(document => {
+      if (/tsx$/.test(document.fileName)) {
+        resetStore(document);
+        return true;
+      }
+      return false;
+    });
   })();
 }

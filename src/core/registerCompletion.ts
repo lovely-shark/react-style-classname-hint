@@ -39,9 +39,11 @@ export default function registerCompletion(context: ExtensionContext): void {
       const { storeActiveTextEditor } = useStore();
       const { styleClassNameMap } = storeActiveTextEditor.get();
       const matchRegStr = keyword.split('').join('.*');
-      let findResult: string[] = [];
+      const findResult: string[] = [];
       Object.values(styleClassNameMap).map(classNames => {
-        findResult = classNames.filter(name => new RegExp(`${matchRegStr}`).test(name));
+        classNames.forEach(name => {
+          if (new RegExp(`${matchRegStr}`).test(name)) findResult.push(name);
+        });
       });
       return findResult;
     }
