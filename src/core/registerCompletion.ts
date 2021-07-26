@@ -26,25 +26,16 @@ export default function registerCompletion(context: ExtensionContext): void {
       const lastKeywordReg = /[^ '"\{]*$/;
       const [keyword] = linePrefixStr.match(lastKeywordReg) ?? [undefined];
       if (keyword) {
-        const classNames = findRelatClassNames(keyword);
+        const classNames = findRelateClassNames(keyword);
         classNames.forEach(name => {
-          const completionItem = new vscode.CompletionItem(
-            name,
-            vscode.CompletionItemKind.Constant
-          );
-          completionItem.insertText = `${name} `;
-          completionItem.command = {
-            command: 'editor.action.triggerSuggest',
-            title: 'Re-trigger completions...',
-          };
-          completionItem.preselect = true;
+          const completionItem = new vscode.CompletionItem(name, vscode.CompletionItemKind.Text);
           completionList.push(completionItem);
         });
       }
     }
     return completionList;
 
-    function findRelatClassNames(keyword: string): string[] {
+    function findRelateClassNames(keyword: string): string[] {
       const { storeActiveTextEditor } = useStore();
       const { styleClassNameMap } = storeActiveTextEditor.get();
       const matchRegStr = keyword.split('').join('.*');
