@@ -1,11 +1,9 @@
 import type { ExtensionContext } from 'vscode';
 import * as vscode from 'vscode';
 import { useStore } from '../../store';
-import Uri from 'vscode';
 import {
   parseImportStyle,
   parseLessToCss,
-  parseSassToCss,
   parseStyleToClassNames,
   parseStylusToCss,
   readCssFileContent,
