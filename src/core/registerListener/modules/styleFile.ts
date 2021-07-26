@@ -3,14 +3,11 @@ import * as vscode from 'vscode';
 import { styleSuffixStr } from '../../constants/';
 import { useStore } from '../../store/';
 import {
-  parseLessToCss,
-  parseStyleToClassNames,
-  parseStylusToCss,
-  readCssFileContent,
+  parseCssToClassNames, parseLessToCss, parseStylusToCss,
+  readCssFileContent
 } from '../../utils';
-import parseImportStyle, { StyleTypes } from '../../utils/modules/parseImportStyle';
 
-export default function (context: ExtensionContext): void {
+export default function initStyleFileListener(context: ExtensionContext): void {
   const styleFileWatcher = vscode.workspace.createFileSystemWatcher(`**/*.{${styleSuffixStr}}`);
   styleFileWatcher.onDidChange(styleFileChange);
   styleFileWatcher.onDidDelete(styleFileDelete);
@@ -48,7 +45,7 @@ async function resolveStyleContent(stylePath: Uri['path'], styleType: string): P
       cssContent = (await parseLessToCss(cssContent)).css;
       break;
     case 'sass':
-    case 'stylu':
+    case 'styl':
       cssContent = await parseStylusToCss(cssContent);
       break;
     case 'css':
@@ -65,8 +62,8 @@ const updateFileStyleContent = async (ctx: ExtensionContext, stylePath: Uri['pat
     const styleType = getStyleType(stylePath);
     if (styleType) {
       const cssContent = await resolveStyleContent(stylePath, styleType);
-      const cssNameList = parseStyleToClassNames(cssContent);
-      storeActiveTextEditor.updateActiveStyleFile(stylePath, Array.from(new Set(cssNameList)));
+      const cssNameList = parseCssToClassNames(cssContent);
+      storeActiveTextEditor.updateActiveStyleContent(stylePath, Array.from(new Set(cssNameList)));
       return;
     }
   }

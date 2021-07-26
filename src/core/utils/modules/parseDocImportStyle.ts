@@ -1,21 +1,23 @@
-import type { TextDocument } from 'vscode';
-import * as vscode from 'vscode';
 import * as path from 'path';
+import type { TextDocument } from 'vscode';
+import type { StyleTypes } from '../../typings';
 
-export type StyleTypes = 'sass' | 'scss' | 'less' | 'stylu' | 'css';
-type ParseImportStyleResult = Array<{ type: StyleTypes; path: string }>;
+type ParseDocImportStyleResult = Array<{ type: StyleTypes; path: string }>;
 
 /**
  *
  * @returns 当前页包含的css文件路径与文件类型(css/less...)
  */
-export default function parseImportStyle(document: TextDocument): ParseImportStyleResult {
+export default function parseDocImportStyle(document: TextDocument): ParseDocImportStyleResult {
   const fileContent = document.getText();
   const currentFolderPath = path.dirname(document.fileName);
 
-  const parseResult: ParseImportStyleResult = (() => {
-    const result: ParseImportStyleResult = [];
-    const importClassList = fileContent.match(/^(import +)('|")(.+?\.(le|sc|c|sa)ss)('|");?$/gm);
+  const parseResult: ParseDocImportStyleResult = (() => {
+    const result: ParseDocImportStyleResult = [];
+    const importClassList = fileContent.match(
+      /^(import +)('|")(.+?\.(((le|sc|c|sa)ss)|styl))('|");?$/gm
+    );
+
     if (importClassList) {
       importClassList.forEach(importVal => {
         const [styleFileRelativePath] = importVal.match(/(?<=('|"))(.+?)(?=('|");?$)/) ?? [];
