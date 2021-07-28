@@ -38,6 +38,7 @@
     "@types/less": "^3.0.3",
     "@types/node": "^12.12.0",
     "@types/node-sass": "^4.11.2",
+    "@types/sass": "^1.16.1",
     "@types/stylus": "^0.48.36",
     "@types/vscode": "^1.32.0",
     "@typescript-eslint/eslint-plugin": "^4.16.0",
@@ -50,5 +51,8 @@
     "rollup": "^2.54.0",
     "stylus": "^0.54.8",
     "typescript": "^4.3.5"
+  },
+  "dependencies": {
+    "sass": "^1.36.0"
   }
 }

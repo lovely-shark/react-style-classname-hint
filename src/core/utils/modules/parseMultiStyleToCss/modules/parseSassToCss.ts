@@ -1,6 +1,6 @@
-// import * as sass from 'node-sass';
+import { renderSync } from 'sass';
 
-export default function parseSassToCss(cssContent: string) {
-  // const convertCss = sass.renderSync({ data: cssContent });
-  // return convertCss.css.toString();
+export default function parseSassToCss(file: string) {
+  const convertCss = renderSync({ file });
+  return convertCss.css.toString();
 }
