@@ -1,1 +1,3 @@
-export const styleSuffixStr = 'less,scss,sass,css,styl';
+import { StyleTypes } from '../typings';
+
+export const styleSuffixStr = Object.values(StyleTypes).join(',');

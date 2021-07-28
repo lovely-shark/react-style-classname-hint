@@ -1,6 +1,6 @@
 import * as path from 'path';
 import type { TextDocument } from 'vscode';
-import type { ParseDocImportStyleResult, StyleTypes } from '../../typings';
+import type { ParseDocImportStyleResult } from '../../typings';
 import matchCssFileSuffix from './matchCssFileSuffix';
 
 /**
