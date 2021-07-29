@@ -37,7 +37,6 @@
   "devDependencies": {
     "@types/less": "^3.0.3",
     "@types/node": "^12.12.0",
-    "@types/node-sass": "^4.11.2",
     "@types/sass": "^1.16.1",
     "@types/stylus": "^0.48.36",
     "@types/vscode": "^1.32.0",
@@ -46,13 +45,11 @@
     "eslint": "^7.21.0",
     "eslint-config-prettier": "^8.3.0",
     "less": "^4.1.1",
-    "node-sass": "^6.0.1",
     "prettier": "^2.3.2",
     "rollup": "^2.54.0",
+    "sass": "^1.36.0",
     "stylus": "^0.54.8",
-    "typescript": "^4.3.5"
-  },
-  "dependencies": {
-    "sass": "^1.36.0"
+    "typescript": "^4.3.5",
+    "source-map": "^0.7.3"
   }
 }
