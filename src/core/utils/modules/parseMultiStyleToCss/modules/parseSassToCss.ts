@@ -5,10 +5,8 @@ import type { ClassNameSourceLines } from '../../../../typings';
 type PositionInfo = Record<'line' | 'column', number>;
 type ClassNameRelatdLinesType = Array<{ g: PositionInfo; o: PositionInfo }>;
 
-export default async function parseSassToCss(
-  sourcesContent: string
-): Promise<ClassNameSourceLines> {
-  const convertCss = renderSync({ data: sourcesContent, sourceMap: true, outFile: './' });
+export default async function parseSassToCss(filePath: string): Promise<ClassNameSourceLines> {
+  const convertCss = renderSync({ file: filePath, sourceMap: true, outFile: './' });
   const result: ClassNameSourceLines = {};
   if (convertCss.map) {
     const cssMapStr = convertCss.map.toString();
@@ -30,7 +28,7 @@ export default async function parseSassToCss(
         });
       }
     });
-    
+
     const cssContentSplit = cssContent.split('\n');
     classNameRelatdLines.forEach(item => {
       const { g, o } = item;
@@ -39,14 +37,14 @@ export default async function parseSassToCss(
         const className = relatdLine.match(/(?<=\.)[\w\-]*(?= *\{)/)?.[0]!;
 
         let classStyleContent = cssContentSplit.slice(g.line - 1).join('\n');
-        classStyleContent = classStyleContent.match(/(?<=\.[\w- ]*)(\{.+?\})/ms)?.[0]!
+        classStyleContent = classStyleContent.match(/(?<=\.[\w- ]*)(\{.+?\})/ms)?.[0]!;
 
         result[className] = {
           sourcePosition: {
             line: o.line,
             column: o.column,
           },
-          styleContent: classStyleContent
+          styleContent: classStyleContent,
         };
       }
     });

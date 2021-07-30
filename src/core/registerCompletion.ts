@@ -6,6 +6,7 @@ import { ClassNameSourceLines } from './typings';
 const completionTriggerChars = `'".-_abcdefghijklmnopqrstuvwxyz1234567890 `;
 const completionTriggerLanguages = ['typescript', 'typescriptreact', 'javascript'];
 
+// 注册编辑器自动完成事件
 export default function registerCompletion(context: ExtensionContext): void {
   const triggerCompletionList = completionTriggerLanguages.map(language =>
     vscode.languages.registerCompletionItemProvider(
@@ -19,6 +20,7 @@ export default function registerCompletion(context: ExtensionContext): void {
 
   return;
 
+  // 对文本输入内容做样式提示
   function handleProvideCompletion(document: TextDocument, position: Position) {
     const linePrefixStr = document.lineAt(position).text.substr(0, position.character);
     const completionList: CompletionItem[] = [];
@@ -41,12 +43,13 @@ export default function registerCompletion(context: ExtensionContext): void {
     }
     return completionList;
 
+    // 查找与输入的关键字相关的名字和对应的内容
     function findRelateClassNameSources(keyword: string): ClassNameSourceLines {
       const { storeActiveTextEditor } = useStore();
       const { styleClassNameMap } = storeActiveTextEditor.get();
       const matchRegStr = keyword.split('').join('.*');
       const findResult: ClassNameSourceLines = {};
-      Object.values(styleClassNameMap).forEach(classNameSourceLine => {
+      styleClassNameMap.forEach(classNameSourceLine => {
         Object.entries(classNameSourceLine).forEach(([className, classNameSource]) => {
           if (new RegExp(`${matchRegStr}`).test(className)) findResult[className] = classNameSource;
         });

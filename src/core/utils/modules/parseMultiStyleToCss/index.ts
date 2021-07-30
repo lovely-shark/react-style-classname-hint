@@ -16,7 +16,7 @@ export default async function parseMultiStyleToCss(
     // break;
     case StyleTypes.SCSS:
     case StyleTypes.SASS:
-      cssResult = await parseSassToCss(cssContent);
+      cssResult = await parseSassToCss(stylePath);
       break;
     // case StyleTypes.STYL:
     //   cssContent = await parseStylusToCss(cssContent);

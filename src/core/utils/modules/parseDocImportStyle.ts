@@ -4,7 +4,8 @@ import type { ParseDocImportStyleResult } from '../../typings';
 import matchCssFileSuffix from './matchCssFileSuffix';
 
 /**
- *
+ * 解析文档中引入的样式路径
+ * @param document 需要解析的文档内容
  * @returns 当前页包含的css文件路径与文件类型(css/less...)
  */
 export default function parseDocImportStyle(document: TextDocument): ParseDocImportStyleResult {
