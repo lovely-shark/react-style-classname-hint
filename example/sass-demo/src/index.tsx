@@ -1,4 +1,4 @@
 import '../style/asc.scss';
 export default function a() {
-  return <div className='mydj'>1</div>;
+  return <div className='mydj1'>1</div>;
 }
