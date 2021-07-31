@@ -17,22 +17,20 @@ export default function initActiveTextEditorListener(context: ExtensionContext) 
   // 订阅文档修改事件
   vscode.workspace.onDidChangeTextDocument(
     Throttle(textDocument => {
-      const { currentActiveFilePath, styleFilePaths } = storeActiveTextEditor.get();
-
+      const { currentActiveFilePath, styleClassNameMap } = storeActiveTextEditor.get();
       if (currentActiveFilePath === textDocument.document.fileName) {
-        const oldActiveStyleFilePaths = styleFilePaths;
-        // 清空旧的 styleFilePaths，不需要删除 styleClassNameMap，可以作为缓存
-        storeActiveTextEditor.utils.clearStyleFilePaths();
-
-        // 处理新增 styleFilePaths 、 styleClassNameMap
         const currentFileStyles = parseDocImportStyle(textDocument.document);
-
-        storeActiveTextEditor.utils.fillStyleFilePaths(currentFileStyles.map(item => item.path));
-
-        const needAddNewFileStyles = currentFileStyles.filter(
-          ({ path }) => !oldActiveStyleFilePaths.has(path)
+        const oldActiveStyleFilePaths = [...styleClassNameMap.keys()];
+        const newActiveStyleFilePaths = currentFileStyles.map(item => item.path);
+        const needRemoveFilePaths = oldActiveStyleFilePaths.filter(
+          path => !newActiveStyleFilePaths.includes(path)
         );
-        storeActiveTextEditor.utils.handleFileStyles(needAddNewFileStyles);
+        const needUpdateFileStyles = newActiveStyleFilePaths
+          .filter(path => !oldActiveStyleFilePaths.includes(path))
+          .map(path => currentFileStyles.find(item => item.path === path)!);
+
+        needRemoveFilePaths.forEach(path => storeActiveTextEditor.removeStyleClassName(path));
+        storeActiveTextEditor.utils.handleFileStyles(needUpdateFileStyles);
       }
     })
   );

@@ -1,18 +1,17 @@
 import type { TextDocument } from 'vscode';
 import * as vscode from 'vscode';
-import type { ClassNameSourceLines, ParseDocImportStyleResult } from '../../typings';
-import { parseCssToClassNames, parseDocImportStyle, parseMultiStyleToCss } from '../../utils';
+import type { ClassNameContentMap, ParseDocImportStyleResult } from '../../typings';
+import { parseDocImportStyle, parseMultiStyleToCss } from '../../utils';
 
-type FilePath = string;
+type StylePath = string;
 interface ActiveTextEditor {
   currentActiveFilePath: string;
-  styleFilePaths: Set<FilePath>;
-  styleClassNameMap: Map<FilePath, ClassNameSourceLines>;
+  styleClassNameMap: Map<StylePath, ClassNameContentMap>;
 }
 
 const initStoreValues = (): ActiveTextEditor => ({
   currentActiveFilePath: '',
-  styleFilePaths: new Set(),
+  // TODO: 缓存系列待优化
   styleClassNameMap: new Map(),
 });
 
@@ -27,7 +26,7 @@ export default class StoreActiveTextEditor {
   static get getStore() {
     return this.storeActive ?? (this.storeActive = new StoreActiveTextEditor());
   }
-  get(): ActiveTextEditor {
+  get(): Readonly<ActiveTextEditor> {
     return this.state;
   }
 
@@ -39,40 +38,26 @@ export default class StoreActiveTextEditor {
     this.state.currentActiveFilePath = path;
   }
 
-  // 根据 styleFile 路径，解析 style 文件并存入 styleClassNameMap
-  updateActiveStyleContent(filePath: string, classNameSource: ClassNameSourceLines): void {
-    // TODO: 这一步似乎可以忽略掉？暂定
-    if (!this.state.styleFilePaths.has(filePath)) {
-      this.state.styleFilePaths.add(filePath);
-    }
-
-    const oldClassNameSourceLines: ClassNameSourceLines =
-      this.state.styleClassNameMap.get(filePath) ?? {};
-
-    this.state.styleClassNameMap.set(filePath, { ...oldClassNameSourceLines, ...classNameSource });
-  }
-
-  /* removeActiveStyleContent(filePath: string): void {
-    const findFilePathIndex = this.state.styleFilePaths.indexOf(filePath);
-    if (findFilePathIndex !== -1) {
-      this.state.styleFilePaths.splice(findFilePathIndex, -1);
-      delete this.state.styleClassNameMap[filePath];
-    }
-  } */
-  private clearStyleFilePaths() {
+  clearStyleClassNameMap(): void {
     this.state.styleClassNameMap.clear();
   }
 
-  private fillStyleFilePaths(stylePathList: FilePath[]) {
-    this.state.styleFilePaths = new Set(stylePathList);
+  removeStyleClassName(stylePath: string): void {
+    this.state.styleClassNameMap.delete(stylePath);
+  }
+
+  // 根据 styleFile 路径，解析 style 文件并存入 styleClassNameMap
+  updateActiveStyleContent(filePath: string, classNameSource: ClassNameContentMap): void {
+    const oldClassNameContentMap: ClassNameContentMap =
+      this.state.styleClassNameMap.get(filePath) ?? {};
+
+    this.state.styleClassNameMap.set(filePath, { ...oldClassNameContentMap, ...classNameSource });
   }
 
   get utils() {
     return {
       initTextDocStyle: this.utilInitTextDocStyle,
       handleFileStyles: this.utilHandleFileStyles,
-      clearStyleFilePaths: this.clearStyleFilePaths,
-      fillStyleFilePaths: this.fillStyleFilePaths,
     };
   }
 

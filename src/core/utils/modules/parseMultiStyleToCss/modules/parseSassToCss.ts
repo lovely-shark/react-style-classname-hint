@@ -1,13 +1,13 @@
 import { renderSync } from 'sass';
 import * as sourceMap from 'source-map';
-import type { ClassNameSourceLines } from '../../../../typings';
+import type { ClassNameContentMap } from '../../../../typings';
 
 type PositionInfo = Record<'line' | 'column', number>;
 type ClassNameRelatdLinesType = Array<{ g: PositionInfo; o: PositionInfo }>;
 
-export default async function parseSassToCss(filePath: string): Promise<ClassNameSourceLines> {
+export default async function parseSassToCss(filePath: string): Promise<ClassNameContentMap> {
   const convertCss = renderSync({ file: filePath, sourceMap: true, outFile: './' });
-  const result: ClassNameSourceLines = {};
+  const result: ClassNameContentMap = {};
   if (convertCss.map) {
     const cssMapStr = convertCss.map.toString();
     const cssContent = convertCss.css.toString();
@@ -40,7 +40,7 @@ export default async function parseSassToCss(filePath: string): Promise<ClassNam
         classStyleContent = classStyleContent.match(/(?<=\.[\w- ]*)(\{.+?\})/ms)?.[0]!;
 
         result[className] = {
-          sourcePosition: {
+          originPosition: {
             line: o.line,
             column: o.column,
           },

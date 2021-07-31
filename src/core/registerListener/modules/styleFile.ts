@@ -14,8 +14,8 @@ export default function initStyleFileListener(context: ExtensionContext): void {
   function styleFileChange(u: Uri) {
     if (isContainDepPath(u.path)) return;
     const storeActiveTextEditor = StoreActiveTextEditor.getStore;
-    const { styleFilePaths } = storeActiveTextEditor.get();
-    if (styleFilePaths.has(u.path)) {
+    const { styleClassNameMap } = storeActiveTextEditor.get();
+    if (styleClassNameMap.has(u.path)) {
       const fileSuffix = matchCssFileSuffix(u.path);
       if (fileSuffix) {
         storeActiveTextEditor.utils.handleFileStyles([
