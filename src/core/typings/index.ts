@@ -17,3 +17,4 @@ export interface ClassNameContent {
 
 type ClssName = string;
 export type ClassNameContentMap = Record<ClssName, ClassNameContent>;
+
