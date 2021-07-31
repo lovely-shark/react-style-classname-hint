@@ -62,8 +62,7 @@
     "typescript": "^4.3.5"
   },
   "dependencies": {
-    "husky": "^7.0.1",
-    "npm": "^7.20.3"
+    "husky": "^7.0.1"
   },
   "husky": {
     "hooks": {
