@@ -17,9 +17,16 @@ const initStoreValues = (): ActiveTextEditor => ({
 });
 
 export default class StoreActiveTextEditor {
-  private state: ActiveTextEditor = initStoreValues();
-  constructor() {}
+  private state: ActiveTextEditor;
 
+  static storeActive: StoreActiveTextEditor;
+
+  constructor() {
+    this.state = initStoreValues();
+  }
+  static get getStore() {
+    return this.storeActive ?? (this.storeActive = new StoreActiveTextEditor());
+  }
   get(): ActiveTextEditor {
     return this.state;
   }

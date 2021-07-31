@@ -1,7 +1,7 @@
 import type { ExtensionContext, Uri } from 'vscode';
 import * as vscode from 'vscode';
 import { styleSuffixStr } from '../../constants/';
-import { useStore } from '../../store';
+import { StoreActiveTextEditor } from '../../store';
 import matchCssFileSuffix from '../../utils/modules/matchCssFileSuffix';
 
 export default function initStyleFileListener(context: ExtensionContext): void {
@@ -13,9 +13,9 @@ export default function initStyleFileListener(context: ExtensionContext): void {
 
   function styleFileChange(u: Uri) {
     if (isContainDepPath(u.path)) return;
-    const { storeActiveTextEditor } = useStore();
+    const storeActiveTextEditor = StoreActiveTextEditor.getStore;
     const { styleFilePaths } = storeActiveTextEditor.get();
-    if (styleFilePaths.includes(u.path)) {
+    if (styleFilePaths.has(u.path)) {
       const fileSuffix = matchCssFileSuffix(u.path);
       if (fileSuffix) {
         storeActiveTextEditor.utils.handleFileStyles([

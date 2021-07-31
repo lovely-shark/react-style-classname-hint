@@ -1,6 +1,6 @@
 import type { CompletionItem, ExtensionContext, Position, TextDocument } from 'vscode';
 import * as vscode from 'vscode';
-import { useStore } from './store';
+import { StoreActiveTextEditor } from './store';
 import { ClassNameSourceLines } from './typings';
 
 const completionTriggerChars = `'".-_abcdefghijklmnopqrstuvwxyz1234567890 `;
@@ -45,7 +45,7 @@ export default function registerCompletion(context: ExtensionContext): void {
 
     // 查找与输入的关键字相关的名字和对应的内容
     function findRelateClassNameSources(keyword: string): ClassNameSourceLines {
-      const { storeActiveTextEditor } = useStore();
+      const storeActiveTextEditor = StoreActiveTextEditor.getStore;
       const { styleClassNameMap } = storeActiveTextEditor.get();
       const matchRegStr = keyword.split('').join('.*');
       const findResult: ClassNameSourceLines = {};

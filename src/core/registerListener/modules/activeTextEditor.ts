@@ -1,12 +1,12 @@
 import type { ExtensionContext } from 'vscode';
 import * as vscode from 'vscode';
-import { useStore } from '../../store';
+import { StoreActiveTextEditor } from '../../store';
 import { parseDocImportStyle, ThrottleFn } from '../../utils';
 import Throttle from '../../utils/modules/throttleFn';
 
 // 初始化订阅文件监听器
 export default function initActiveTextEditorListener(context: ExtensionContext) {
-  const { storeActiveTextEditor } = useStore();
+  const storeActiveTextEditor = StoreActiveTextEditor.getStore;
   // 订阅tabs切换事件
   vscode.window.onDidChangeActiveTextEditor(editor => {
     if (editor) {
