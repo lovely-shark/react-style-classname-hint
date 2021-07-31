@@ -4,3 +4,5 @@ node_modules
 debug.log
 .DS_Store
 *.zip
+example/**/*.js
+example/**/*.js.map
