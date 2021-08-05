@@ -1,6 +1,7 @@
 {
   "name": "react-style-classname-hint",
   "displayName": "react-style-classname-hint",
+  "description": "一个编写 React 时享受到 className 智能提示的插件",
   "version": "1.0.0",
   "publisher": "lovely-shark",
   "private": true,
@@ -12,6 +13,7 @@
   "engines": {
     "vscode": "^1.32.0"
   },
+  "icon": "app-icon.jpg",
   "categories": [
     "Other"
   ],
