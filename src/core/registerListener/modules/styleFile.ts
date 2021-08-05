@@ -2,7 +2,7 @@ import type { ExtensionContext, Uri } from 'vscode';
 import * as vscode from 'vscode';
 import { styleSuffixStr } from '../../constants/';
 import { StoreActiveTextEditor } from '../../store';
-import matchCssFileSuffix from '../../utils/modules/matchCssFileSuffix';
+import { matchCssFileSuffix } from '../../utils/';
 
 export default function initStyleFileListener(context: ExtensionContext): void {
   const styleFileWatcher = vscode.workspace.createFileSystemWatcher(`**/*.{${styleSuffixStr}}`);

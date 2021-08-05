@@ -1,5 +1,6 @@
-export { default as parseDocImportStyle } from './modules/parseDocImportStyle';
-export * from './modules/parseMultiStyleToCss';
-export { default as parseMultiStyleToCss } from './modules/parseMultiStyleToCss/';
-export { default as ThrottleFn } from './modules/throttleFn';
+import parseDocImportStyle from './modules/parseDocImportStyle';
+import parseMultiStyleToCss from './modules/parseMultiStyleToCss/';
+import ThrottleFn from './modules/ThrottleFn';
+import matchCssFileSuffix from './modules/matchCssFileSuffix';
 
+export { parseDocImportStyle, parseMultiStyleToCss, matchCssFileSuffix, ThrottleFn };

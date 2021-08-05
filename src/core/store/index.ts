@@ -1,1 +1,2 @@
-export { default as StoreActiveTextEditor } from './modules/activeTextEditor';
+import StoreActiveTextEditor from './modules/activeTextEditor';
+export { StoreActiveTextEditor };

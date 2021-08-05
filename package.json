@@ -1,21 +1,13 @@
 {
   "name": "react-style-classname-hint",
   "displayName": "react-style-classname-hint",
-  "version": "0.0.2",
-  "publisher": "vscode-samples",
+  "version": "1.0.0",
+  "publisher": "lovely-shark",
   "private": true,
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Microsoft/vscode-extension-samples"
-  },
-  "contributes": {
-    "commands": [
-      {
-        "command": "test.cache",
-        "title": "Cache classname"
-      }
-    ]
+    "url": "https://github.com/lovely-shark/react-style-classname-hint"
   },
   "engines": {
     "vscode": "^1.32.0"
@@ -33,7 +25,8 @@
     "lint": "eslint . --ext .ts,.tsx",
     "watch": "tsc -watch -p ./",
     "fix": "prettier --write .",
-    "test": "jest"
+    "test": "jest",
+    "vsce:build": "vsce package --no-yarn"
   },
   "devDependencies": {
     "@commitlint/cli": "^13.1.0",

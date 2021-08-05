@@ -8,5 +8,5 @@
     "strict": true,
     "rootDir": "src"
   },
-  "exclude": ["node_modules", ".vscode-test", "__test__", "example"]
+  "exclude": ["node_modules", ".vscode-test", "__test__", "example", "jest.config.ts"]
 }
