@@ -15,6 +15,7 @@ export default function Throttle<R extends any[], T>(
   options = defaultThrottleOptions
 ) {
   let timer: NodeJS.Timeout | undefined | number;
+  // FIX: 同步节流写法，无法处理最后一次操作
   return function (...arg: R) {
     if (options.immediate) {
       options.immediate = false;
