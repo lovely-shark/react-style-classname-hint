@@ -1,9 +1,10 @@
-import type { ExtensionContext, Uri } from 'vscode';
 import * as vscode from 'vscode';
+
 import { styleSuffixStr } from '../../constants/';
 import { StoreActiveTextEditor } from '../../store';
 import { matchCssFileSuffix } from '../../utils/';
 
+import type { ExtensionContext, Uri } from 'vscode';
 export default function initStyleFileListener(context: ExtensionContext): void {
   const styleFileWatcher = vscode.workspace.createFileSystemWatcher(`**/*.{${styleSuffixStr}}`);
   styleFileWatcher.onDidChange(styleFileChange);
@@ -12,6 +13,8 @@ export default function initStyleFileListener(context: ExtensionContext): void {
   return;
 
   function styleFileChange(u: Uri) {
+    console.log('u', '文件变化监听成功', isContainDepPath(u.path));
+
     if (isContainDepPath(u.path)) return;
     const storeActiveTextEditor = StoreActiveTextEditor.getStore;
     const { styleClassNameMap } = storeActiveTextEditor.get();
@@ -29,9 +32,13 @@ export default function initStyleFileListener(context: ExtensionContext): void {
     console.log('styleFileChange', u);
   }
   function styleFileDelete(u: Uri) {
+    console.log('u', '文件删除监听成功');
+
     if (isContainDepPath(u.path)) return;
   }
   function styleFileCreate(u: Uri) {
+    console.log('u', '文件创建监听成功');
+
     if (isContainDepPath(u.path)) return;
     console.log('styleFileCreate', u);
   }

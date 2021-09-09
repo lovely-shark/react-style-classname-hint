@@ -1,4 +1,5 @@
-import * as stylus from 'stylus';
+import stylus from 'stylus';
+
 import { ClassNameContentMap } from '../../../../typings';
 import { filterCssSourceMap } from '../utils';
 

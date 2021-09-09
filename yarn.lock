@@ -2215,6 +2215,11 @@ error-ex@^1.3.1:
   dependencies:
     is-arrayish "^0.2.1"
 
+esbuild@^0.12.25:
+  version "0.12.25"
+  resolved "http://10.9.51.250:8081/repository/npm-all/esbuild/-/esbuild-0.12.25.tgz#c2131cef022cf9fe94aaa5e00110b27fc976221a"
+  integrity sha1-whMc7wIs+f6UqqXgARCyf8l2Iho=
+
 escalade@^3.1.1:
   version "3.1.1"
   resolved "https://r.cnpmjs.org/escalade/download/escalade-3.1.1.tgz#d8cfdc7000965c5a0174b4a82eaa5c0552742e40"

@@ -1,9 +1,10 @@
-import type { ExtensionContext } from 'vscode';
 import * as vscode from 'vscode';
-import { StoreActiveTextEditor } from '../../store';
-import { parseDocImportStyle, ThrottleFn } from '../../utils';
-import Throttle from '../../utils/modules/throttleFn';
 
+import { StoreActiveTextEditor } from '../../store';
+import { parseDocImportStyle } from '../../utils';
+import Throttle from '../../utils/modules/ThrottleFn';
+
+import type { ExtensionContext } from 'vscode';
 // 初始化订阅文件监听器
 export default function initActiveTextEditorListener(context: ExtensionContext) {
   const storeActiveTextEditor = StoreActiveTextEditor.getStore;
@@ -17,6 +18,8 @@ export default function initActiveTextEditorListener(context: ExtensionContext) 
   // 订阅文档修改事件
   vscode.workspace.onDidChangeTextDocument(
     Throttle(textDocument => {
+      console.log('订阅文档修改事件', textDocument);
+
       const { currentActiveFilePath, styleClassNameMap } = storeActiveTextEditor.get();
       if (currentActiveFilePath === textDocument.document.fileName) {
         const currentFileStyles = parseDocImportStyle(textDocument.document);
