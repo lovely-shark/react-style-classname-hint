@@ -23,7 +23,7 @@
   "main": "./out/extension.js",
   "scripts": {
     "vscode:prepublish": "npm run compile",
-    "compile": "tsc -p ./",
+    "compile": "esbuild ./src/extension.ts --bundle --platform=node --external:vscode --external:fsevents --outfile=./out/extension.js",
     "lint": "eslint . --ext .ts,.tsx",
     "watch": "tsc -watch -p ./",
     "fix": "prettier --write .",
