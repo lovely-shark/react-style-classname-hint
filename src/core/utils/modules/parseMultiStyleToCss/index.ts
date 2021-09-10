@@ -9,6 +9,8 @@ export default async function parseMultiStyleToCss(
   styleType: StyleTypes
 ): Promise<ClassNameContentMap | null> {
   let cssContent = fs.readFileSync(stylePath).toString();
+  console.log('样式内容是:', cssContent);
+
   let cssResult: ClassNameContentMap | null = null;
   switch (styleType) {
     case StyleTypes.LESS:
@@ -17,6 +19,7 @@ export default async function parseMultiStyleToCss(
     case StyleTypes.SCSS:
     case StyleTypes.SASS:
       cssResult = await parseSassToCss(stylePath);
+      console.log('解析 scss', cssResult);
       break;
     case StyleTypes.STYL:
       cssResult = await parseStylusToCss(cssContent);

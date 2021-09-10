@@ -11,6 +11,8 @@ export default function initActiveTextEditorListener(context: ExtensionContext) 
   // 订阅tabs切换事件
   vscode.window.onDidChangeActiveTextEditor(editor => {
     if (editor) {
+      console.log('切换tabs', editor.document);
+
       storeActiveTextEditor.utils.initTextDocStyle(editor.document);
     }
   });

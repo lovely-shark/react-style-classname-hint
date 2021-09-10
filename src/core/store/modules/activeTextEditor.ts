@@ -50,8 +50,9 @@ export default class StoreActiveTextEditor {
   updateActiveStyleContent(filePath: string, classNameSource: ClassNameContentMap): void {
     const oldClassNameContentMap: ClassNameContentMap =
       this.state.styleClassNameMap.get(filePath) ?? {};
-
     this.state.styleClassNameMap.set(filePath, { ...oldClassNameContentMap, ...classNameSource });
+
+    console.log('更新map-》', this.state, oldClassNameContentMap, classNameSource);
   }
 
   get utils() {
@@ -75,9 +76,13 @@ export default class StoreActiveTextEditor {
 
   // 解析样式文件并保存
   private utilHandleFileStyles = async (fileStyles: ParseDocImportStyleResult): Promise<void> => {
+    console.log('解析样式', fileStyles);
+
     fileStyles.forEach(async style => {
       try {
         const classNameSources = await parseMultiStyleToCss(style.path, style.type);
+        console.log('解析的样式sourcemap：', classNameSources);
+
         if (classNameSources) {
           this.updateActiveStyleContent(
             style.path,
