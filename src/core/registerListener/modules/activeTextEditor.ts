@@ -11,8 +11,6 @@ export default function initActiveTextEditorListener(context: ExtensionContext) 
   // 订阅tabs切换事件
   vscode.window.onDidChangeActiveTextEditor(editor => {
     if (editor) {
-      console.log('切换tabs', editor.document);
-
       storeActiveTextEditor.utils.initTextDocStyle(editor.document);
     }
   });
@@ -20,8 +18,6 @@ export default function initActiveTextEditorListener(context: ExtensionContext) 
   // 订阅文档修改事件
   vscode.workspace.onDidChangeTextDocument(
     Throttle(textDocument => {
-      console.log('订阅文档修改事件', textDocument);
-
       const { currentActiveFilePath, styleClassNameMap } = storeActiveTextEditor.get();
       if (currentActiveFilePath === textDocument.document.fileName) {
         const currentFileStyles = parseDocImportStyle(textDocument.document);

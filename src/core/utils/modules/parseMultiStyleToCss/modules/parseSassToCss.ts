@@ -8,20 +8,12 @@ import { filterCssSourceMap } from '../utils';
  * @returns {ClassNameContentMap}
  */
 export default async function parseSassToCss(filePath: string): Promise<ClassNameContentMap> {
-  const convertCss = renderSync({ file: filePath, sourceMap: true, outFile: filePath + 'adj' });
-  console.log('解析结果：', convertCss, {
-    file: filePath,
-    sourceMap: true,
-    outFile: filePath + 'adj',
-  });
+  const convertCss = renderSync({ file: filePath, sourceMap: true });
 
   let result: ClassNameContentMap = {};
   if (convertCss.map) {
     const cssMapStr = convertCss.map.toString();
     const cssContent = convertCss.css.toString();
-    console.log('cssMapStr->', cssMapStr);
-    console.log('cssContent->', cssContent);
-
     result = await filterCssSourceMap(cssMapStr, cssContent);
   }
   return result;

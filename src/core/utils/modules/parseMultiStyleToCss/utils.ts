@@ -46,7 +46,6 @@ export const filterCssSourceMap = async (
   } catch (error) {
     console.error(error);
   }
-  console.log('sourcemap-result', result);
 
   return result;
 };

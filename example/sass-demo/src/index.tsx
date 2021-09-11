@@ -1,5 +1,5 @@
-import '../style/asc.scss';
+import '../style/ab.less';
 
 export default function a() {
-  return <div className='my'>1</div>;
+  return <div className='xdjx'>1</div>;
 }

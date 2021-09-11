@@ -13,8 +13,6 @@ export default function initStyleFileListener(context: ExtensionContext): void {
   return;
 
   function styleFileChange(u: Uri) {
-    console.log(u, '样式文件变化监听成功', isContainDepPath(u.path));
-
     if (isContainDepPath(u.path)) return;
     const storeActiveTextEditor = StoreActiveTextEditor.getStore;
     const { styleClassNameMap } = storeActiveTextEditor.get();
@@ -29,18 +27,12 @@ export default function initStyleFileListener(context: ExtensionContext): void {
         ]);
       }
     }
-    console.log('styleFileChange', u);
   }
   function styleFileDelete(u: Uri) {
-    console.log('u', '文件删除监听成功');
-
     if (isContainDepPath(u.path)) return;
   }
   function styleFileCreate(u: Uri) {
-    console.log('u', '文件创建监听成功');
-
     if (isContainDepPath(u.path)) return;
-    console.log('styleFileCreate', u);
   }
 
   function isContainDepPath(path: string): boolean {
