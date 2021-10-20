@@ -1,25 +1,19 @@
 {
   "name": "react-style-classname-hint",
   "displayName": "react-style-classname-hint",
-  "version": "0.0.2",
-  "publisher": "vscode-samples",
+  "description": "一个编写 React 时享受到 className 智能提示的插件",
+  "version": "1.0.1",
+  "publisher": "lovely-shark",
   "private": true,
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Microsoft/vscode-extension-samples"
-  },
-  "contributes": {
-    "commands": [
-      {
-        "command": "test.cache",
-        "title": "Cache classname"
-      }
-    ]
+    "url": "https://github.com/lovely-shark/react-style-classname-hint"
   },
   "engines": {
     "vscode": "^1.32.0"
   },
+  "icon": "app-icon.jpg",
   "categories": [
     "Other"
   ],
@@ -29,26 +23,47 @@
   "main": "./out/extension.js",
   "scripts": {
     "vscode:prepublish": "npm run compile",
-    "compile": "tsc -p ./",
+    "compile": "esbuild ./src/extension.ts --bundle --platform=node --external:vscode --external:fsevents --outfile=./out/extension.js",
     "lint": "eslint . --ext .ts,.tsx",
     "watch": "tsc -watch -p ./",
-    "fix": "prettier --write ."
+    "fix": "prettier --write .",
+    "test": "jest",
+    "vsce:build": "vsce package --no-yarn"
   },
   "devDependencies": {
+    "@commitlint/cli": "^13.1.0",
+    "@commitlint/config-conventional": "^13.1.0",
+    "@types/jest": "^26.0.24",
     "@types/less": "^3.0.3",
     "@types/node": "^12.12.0",
-    "@types/node-sass": "^4.11.2",
+    "@types/sass": "^1.16.1",
     "@types/stylus": "^0.48.36",
     "@types/vscode": "^1.32.0",
     "@typescript-eslint/eslint-plugin": "^4.16.0",
     "@typescript-eslint/parser": "^4.16.0",
+    "esbuild": "^0.12.25",
     "eslint": "^7.21.0",
     "eslint-config-prettier": "^8.3.0",
+    "git-cz": "^4.7.6",
+    "jest": "^27.0.6",
     "less": "^4.1.1",
-    "node-sass": "^6.0.1",
+    "nodemon": "^2.0.12",
     "prettier": "^2.3.2",
     "rollup": "^2.54.0",
+    "sass": "^1.36.0",
+    "source-map": "^0.7.3",
     "stylus": "^0.54.8",
+    "ts-jest": "^27.0.4",
+    "ts-node": "^10.1.0",
     "typescript": "^4.3.5"
+  },
+  "dependencies": {
+    "husky": "^7.0.1",
+    "npm": "^7.20.3"
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
   }
 }

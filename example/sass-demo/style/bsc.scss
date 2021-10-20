@@ -1,0 +1,17 @@
+@import 'asc.scss';
+
+.xxx {
+  background-color: $dj;
+}
+
+.djok {
+  background-color: aqua;
+
+  &-dj {
+    color: gray;
+
+    .xdj {
+      color: red;
+    }
+  }
+}

@@ -1,19 +1,23 @@
-import type { ExtensionContext } from 'vscode';
 import * as vscode from 'vscode';
-import registerCompletion from './core/registerCompletion';
-import registerListener from './core/registerListener/index';
-import { resetStore } from './core/registerListener/modules/activeTextEditor';
-import { useStore } from './core/store';
 
+import registerCompletion from './core/registerCompletion';
+import registerDefinition from './core/registerDefinition';
+import registerListener from './core/registerListener';
+import { StoreActiveTextEditor } from './core/store';
+
+import type { ExtensionContext } from 'vscode';
 export function activate(context: ExtensionContext) {
-  useStore(context);
   registerListener(context);
   registerCompletion(context);
-
+  registerDefinition(context);
+  console.log('shark-启动成功');
+  
+  // // TODO: 初始化需要单独拆成一个函数
   void (function initCurrentOpenEditor() {
-    const [firstTextDocuments] = vscode.workspace.textDocuments;
-    if (firstTextDocuments) {
-      resetStore(firstTextDocuments);
+    const storeActiveTextEditor = StoreActiveTextEditor.getStore;
+    const [firstTextDocument] = vscode.workspace.textDocuments;
+    if (/tsx$/.test(firstTextDocument?.fileName)) {
+      storeActiveTextEditor.utils.initTextDocStyle(firstTextDocument);
     }
   })();
 }

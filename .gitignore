@@ -4,3 +4,7 @@ node_modules
 debug.log
 .DS_Store
 *.zip
+example/**/*.js
+example/**/*.js.map
+react-style-classname-hint-1.0.0.vsix
+react-style-classname-hint-1.0.1.vsix

@@ -1,87 +1,39 @@
-import type { ExtensionContext } from 'vscode';
 import * as vscode from 'vscode';
-import { useStore } from '../../store';
-import Uri from 'vscode';
-import {
-  parseImportStyle,
-  parseLessToCss,
-  parseSassToCss,
-  parseStyleToClassNames,
-  parseStylusToCss,
-  readCssFileContent,
-  ThrottleFn,
-} from '../../utils';
 
-export default function listenerActiveTextEditor(context: ExtensionContext) {
-  const { storeActiveTextEditor } = useStore();
+import { StoreActiveTextEditor } from '../../store';
+import { parseDocImportStyle } from '../../utils';
+import Throttle from '../../utils/modules/ThrottleFn';
+
+import type { ExtensionContext } from 'vscode';
+// 初始化订阅文件监听器
+export default function initActiveTextEditorListener(context: ExtensionContext) {
+  const storeActiveTextEditor = StoreActiveTextEditor.getStore;
+  // 订阅tabs切换事件
   vscode.window.onDidChangeActiveTextEditor(editor => {
     if (editor) {
-      resetStore(editor.document);
+      storeActiveTextEditor.utils.initTextDocStyle(editor.document);
     }
   });
 
-  void (function () {
-    const changeThrottle = new ThrottleFn();
-    vscode.workspace.onDidChangeTextDocument(textDocument => {
-      changeThrottle.exec(2000, () => {
-        const { currentActiveFilePath } = storeActiveTextEditor.get();
-        if (currentActiveFilePath === textDocument.document.fileName) {
-          const currentFileStyles = parseImportStyle(textDocument.document);
-          const oldActiveStyleFilePaths = storeActiveTextEditor.get().styleFilePaths;
-          const newActiveStyleFilePaths = currentFileStyles.map(item => item.path);
+  // 订阅文档修改事件
+  vscode.workspace.onDidChangeTextDocument(
+    Throttle(textDocument => {
+      const { currentActiveFilePath, styleClassNameMap } = storeActiveTextEditor.get();
+      if (currentActiveFilePath === textDocument.document.fileName) {
+        const currentFileStyles = parseDocImportStyle(textDocument.document);
+        const oldActiveStyleFilePaths = [...styleClassNameMap.keys()];
+        const newActiveStyleFilePaths = currentFileStyles.map(item => item.path);
+        const needRemoveFilePaths = oldActiveStyleFilePaths.filter(
+          path => !newActiveStyleFilePaths.includes(path)
+        );
+        const needUpdateFileStyles = newActiveStyleFilePaths
+          .filter(path => !oldActiveStyleFilePaths.includes(path))
+          .map(path => currentFileStyles.find(item => item.path === path)!);
 
-          const needRemoveFilePaths = oldActiveStyleFilePaths.filter(
-            path => !newActiveStyleFilePaths.includes(path)
-          );
-          const needUpdateFileStyles = newActiveStyleFilePaths
-            .filter(path => !oldActiveStyleFilePaths.includes(path))
-            .map(path => currentFileStyles.find(item => item.path === path)!);
-
-          needRemoveFilePaths.forEach(path => storeActiveTextEditor.removeActiveStyleFile(path));
-          updateCurrentTextEditorStyle(needUpdateFileStyles);
-        }
-      });
-    });
-  })();
-
-  return;
-}
-export const resetStore = (document: vscode.TextDocument) => {
-  const { storeActiveTextEditor } = useStore();
-  const path = document.uri.path;
-  if (/(tsx|js|ts)$/.test(path)) {
-    storeActiveTextEditor.initState();
-    storeActiveTextEditor.setCurrentActiveFilePath(path);
-    const currentFileStyles = parseImportStyle(document);
-    updateCurrentTextEditorStyle(currentFileStyles);
-  }
-};
-export function updateCurrentTextEditorStyle(
-  updateFileStyles: ReturnType<typeof parseImportStyle>
-): void {
-  const { storeActiveTextEditor } = useStore();
-  updateFileStyles.forEach(async style => {
-    try {
-      let cssContent = readCssFileContent(style.path);
-      switch (style.type) {
-        case 'less':
-        case 'scss':
-          cssContent = (await parseLessToCss(cssContent)).css;
-          break;
-        case 'sass':
-        case 'stylu':
-          cssContent = await parseStylusToCss(cssContent);
-          break;
-        case 'css':
-          break;
+        needRemoveFilePaths.forEach(path => storeActiveTextEditor.removeStyleClassName(path));
+        storeActiveTextEditor.utils.handleFileStyles(needUpdateFileStyles);
       }
-      storeActiveTextEditor.updateActiveStyleFile(
-        style.path,
-        Array.from(new Set(parseStyleToClassNames(cssContent)))
-      );
-    } catch (error) {
-      console.log(error);
-      vscode.window.showErrorMessage(`${style.path}存在问题`);
-    }
-  });
+    })
+  );
+  return;
 }
